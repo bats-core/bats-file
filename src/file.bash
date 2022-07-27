@@ -551,7 +551,7 @@ assert_file_size_equals() {
 assert_file_contains() {
   local -r file="$1"
   local -r regex="$2"
-  if ! grep -q "$regex" "$file"; then
+  if ! grep -E -q "$regex" "$file"; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"
     batslib_print_kv_single 4 'path' "${file/$rem/$add}" \
