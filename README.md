@@ -739,9 +739,11 @@ path : /path/to/non-empty-file
 Fail if the given file does not contain the regex.
 ```bash
 @test 'assert_file_contains() {
-    assert_file_contains /path/to/non-empty-file regex
+    assert_file_contains /path/to/non-empty-file regex engine
 }
 ```
+`engine` is optional and can be one of `grep`, `egrep` or `pcregrep`. The specified engine must be available on the system running the tests.
+
 On failure, the path and expected regex are displayed.
 
 [Back to index](#Index-of-all-functions)

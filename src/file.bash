@@ -543,6 +543,7 @@ assert_file_size_equals() {
 # Arguments:
 #   $1 - path
 #   $2 - regex
+#   $3 - grep engine to use (grep, egrep, pcregrep) - optional
 # Returns:
 #   0 - file contains regex
 #   1 - otherwise
@@ -551,7 +552,13 @@ assert_file_size_equals() {
 assert_file_contains() {
   local -r file="$1"
   local -r regex="$2"
-  if ! grep -E -q "$regex" "$file"; then
+  local -r cmd="${3:-grep}"
+  local -r engines=(grep egrep pcregrep)
+  if [ -z "$(echo ${engines[@]} | grep -w ${cmd})" ] || ! which ${cmd} > /dev/null 2>&1; then
+    batslib_decorate "Regex engine \"${cmd}\" not available on this system" \
+      | fail
+  fi
+  if ! $cmd -q "$regex" "$file"; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"
     batslib_print_kv_single 4 'path' "${file/$rem/$add}" \
