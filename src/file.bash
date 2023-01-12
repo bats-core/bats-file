@@ -553,12 +553,20 @@ assert_file_contains() {
   local -r file="$1"
   local -r regex="$2"
   local -r cmd="${3:-grep}"
-  local -r engines=(grep egrep pcregrep)
-  if [ -z "$(echo ${engines[@]} | grep -w ${cmd})" ] || ! which ${cmd} > /dev/null 2>&1; then
-    batslib_decorate "Regex engine \"${cmd}\" not available on this system" \
-      | fail
-  fi
-  if ! $cmd -q "$regex" "$file"; then
+  
+  case "$cmd" in
+    grep|egrep|pcregrep)
+      if ! type "${cmd}" &>/dev/null; then
+        batslib_decorate "Regex engine \"${cmd}\" not available on this system" \
+          | fail
+      fi
+    ;;
+    *)
+      batslib_decorate "Regex engine \"${cmd}\" not in allow list" \
+      | fail  
+    ;;
+  esac
+  if ! "$cmd" -q "$regex" "$file"; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"
     batslib_print_kv_single 4 'path' "${file/$rem/$add}" \
