@@ -990,7 +990,7 @@ user@localhost:~/bats-file$ vagrant up
 
 The line above spins up a brand new virtualbox image and provisions with prerequisites.
 
-However, as the tests require not to be on a network share due to running commands eg: `mknod`, the files are shared into the VM by `rsync` module. Rsync in vagrant only runs initialy and stops. During the active development, you regularly change files and might want to see the impact. To achive that, you have to use auto rsync.
+However, as the tests require not to be on a network share due to running commands eg: `mknod`, the files are shared into the VM by `rsync` module. Rsync in vagrant only runs initialy and stops. During the active development, you regularly change files and might want to see the impact. To achieve that, you have to use auto rsync.
 
 > `auto-rsync` is a long running command. It means that it has to run on terminal screen as long as the VM is up and running. So, you have to keep this in a dedicated terminal screen.
 
