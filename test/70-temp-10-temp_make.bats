@@ -27,7 +27,7 @@ fixtures 'temp'
   if [[ "$OSTYPE" == darwin* ]]; then
     REGEX="mktemp: mkdtemp failed on $BATS_TMPDIR/.*: No such file or directory"
   else
-    REGEX="mktemp: (failed to create directory via template|\(null\): No such file or directory)"
+    REGEX="mktemp: (failed to create directory via template|(\(null\): )?No such file or directory)"
   fi
   [[ ${lines[1]} =~ $REGEX ]] || false
   [ "${lines[2]}" == '--' ]
