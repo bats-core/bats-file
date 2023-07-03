@@ -36,7 +36,7 @@ fixtures 'empty'
   run assert_file_not_contains "$file" "Not empty"
   [ "$status" -eq 1 ]
   [ "${#lines[@]}" -eq 4 ]
-  [ "${lines[0]}" == '-- file does not contain regex --' ]
+  [ "${lines[0]}" == '-- file contains regex --' ]
   [ "${lines[1]}" == "path : $file" ]
   [ "${lines[2]}" == "regex : Not empty" ]
   [ "${lines[3]}" == '--' ]
