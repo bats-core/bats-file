@@ -749,7 +749,7 @@ On failure, the path and expected regex are displayed.
 ---
 
 ### `assert_file_not_contains`
-Fail if the given file contains the regex.
+Fail if the given file contains the regex or if the file does not exist.
 ```bash
 @test 'assert_file_not_contains() {
     assert_file_not_contains /path/to/non-empty-file regex
