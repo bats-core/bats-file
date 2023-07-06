@@ -44,8 +44,6 @@ fixtures 'empty'
 @test 'assert_file_not_contains() <file>: returns 1 and displays path if <file> does not exist' {
   local -r file="${TEST_FIXTURE_ROOT}/missing"
   run assert_file_not_contains "$file" "XXX"
-  echo "status: $status"
-  echo "output: $output"
   [ "$status" -eq 1 ]
   [ "${#lines[@]}" -eq 4 ]
   [ "${lines[0]}" == '-- file does not exist --' ]
