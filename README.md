@@ -29,7 +29,7 @@ load this library.
 | Test File Types | Test File Attributes | Test File Content |
 | ----------- | ----------- | ----------- |
 | _Check if a **file or directory** exists!_ <br/> - [assert_exists](#assert_exists) <br/> - [assert_not_exists](#assert_not_exists) | _Check if file is **executable**!_ <br/> - [assert_file_executable](#assert_file_executable) <br/> - [assert_file_not_executable](#assert_file_not_executable) | _Check if file is **empty**!_ <br/> - [assert_file_empty](#assert_file_empty) <br/> - [assert_file_not_empty](#assert_file_not_empty) |
-| _Check if a **file** exists!_ <br/> - [assert_file_exists](#assert_file_exists) <br/> - [assert_file_not_exists](#assert_file_not_exists) | _Check the **owner** of a file!_ <br/> - [assert_file_owner](#assert_file_owner) <br/> - [assert_file_not_owner](#assert_file_not_owner) | _Check if file **contains regex**!_ <br/>  - [assert_file_contains](#assert_file_contains) <br/> - ~~assert_file_not_contains~~ |
+| _Check if a **file** exists!_ <br/> - [assert_file_exists](#assert_file_exists) <br/> - [assert_file_not_exists](#assert_file_not_exists) | _Check the **owner** of a file!_ <br/> - [assert_file_owner](#assert_file_owner) <br/> - [assert_file_not_owner](#assert_file_not_owner) | _Check if file **contains regex**!_ <br/>  - [assert_file_contains](#assert_file_contains) <br/> - [assert_file_not_contains](#assert_file_not_contains) |
 | _Check if a **directory** exists!_ <br/> - [assert_dir_exists](#assert_dir_exists) <br/> - [assert_dir_not_exists](#assert_dir_not_exists) | _Check the **permission** of a file!_ <br/> - [assert_file_permission](#assert_file_permission) <br/> - [assert_not_file_permission](#assert_not_file_permission) | _Check if file is a **symlink to target**!_ <br/> - [assert_symlink_to](#assert_symlink_to) <br/> - [assert_not_symlink_to](#assert_not_symlink_to) |
 | _Check if a **link** exists!_ <br/> - [assert_link_exists](#assert_link_exists) <br/> - [assert_link_not_exists](#assert_link_not_exists) | _Check the **size** of a file **by bytes**!_ <br/> - [assert_file_size_equals](#assert_file_size_equals) |
 | _Check if a **block special file** exists!_ <br/> - [assert_block_exists](#assert_block_exists) <br/> - [assert_block_not_exists](#assert_block_not_exists) | _Check if a file have **zero bytes**!_ <br/> - [assert_size_zero](#assert_size_zero) <br/> - [assert_size_not_zero](#assert_size_not_zero) |
@@ -743,6 +743,19 @@ Fail if the given file does not contain the regex.
 }
 ```
 On failure, the path and expected regex are displayed.
+
+[Back to index](#Index-of-all-functions)
+
+---
+
+### `assert_file_not_contains`
+Fail if the given file contains the regex or if the file does not exist.
+```bash
+@test 'assert_file_not_contains() {
+    assert_file_not_contains /path/to/non-empty-file regex
+}
+```
+On failure, the path and regex are displayed.
 
 [Back to index](#Index-of-all-functions)
 

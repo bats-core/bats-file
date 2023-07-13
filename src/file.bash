@@ -548,6 +548,40 @@ assert_file_contains() {
       | fail
   fi
 }
+# Fail and display path of the file (or directory) if it does contain a string.
+# This function is the logical complement of `assert_file_contains'.
+#
+# Globals:
+#   BATSLIB_FILE_PATH_REM
+#   BATSLIB_FILE_PATH_ADD
+# Arguments:
+#   $1 - path
+#   $2 - regex
+# Returns:
+#   0 - file does not contain regex
+#   1 - otherwise
+# Outputs:
+#   STDERR - details, on failure
+assert_file_not_contains() {
+  local -r file="$1"
+  local -r regex="$2"
+
+  if [[ ! -f "$file" ]]; then
+    local -r rem="${BATSLIB_FILE_PATH_REM-}"
+    local -r add="${BATSLIB_FILE_PATH_ADD-}"
+    batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
+      | batslib_decorate 'file does not exist' \
+      | fail
+  
+  elif grep -q "$regex" "$file"; then
+    local -r rem="${BATSLIB_FILE_PATH_REM-}"
+    local -r add="${BATSLIB_FILE_PATH_ADD-}"
+    batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
+      | batslib_decorate 'file contains regex' \
+      | fail
+
+  fi
+}
 # Fail and display path of the file (or directory) if it is not empty.
 # This function is the logical complement of `assert_file_not_empty'.
 #
