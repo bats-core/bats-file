@@ -24,11 +24,8 @@ fixtures 'temp'
   [ "$status" -eq 1 ]
   [ "${#lines[@]}" -eq 3 ]
   [ "${lines[0]}" == '-- ERROR: temp_make --' ]
-  if [[ "$OSTYPE" == darwin* ]]; then
-    REGEX="mktemp: mkdtemp failed on $BATS_TMPDIR/.*: No such file or directory"
-  else
-    REGEX="mktemp: (failed to create directory via template|(\(null\): )?No such file or directory)"
-  fi
+  
+  REGEX="mktemp:.*No such file or directory"
   [[ ${lines[1]} =~ $REGEX ]] || false
   [ "${lines[2]}" == '--' ]
 }
