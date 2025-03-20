@@ -856,7 +856,7 @@ error message on the standard error.
 
 ```
 -- ERROR: temp_make --
-mktemp: failed to create directory via template ‘/etc/samle.bats-1-XXXXXXXXXX’: Permission denied
+mktemp: failed to create directory via template ‘/etc/sample.bats-1-XXXXXXXXXX’: Permission denied
 --
 ```
 
@@ -897,7 +897,7 @@ error message on the standard error.
 
 ```
 -- ERROR: temp_del --
-rm: cannot remove '/etc/samle.bats-1-04RUVmBP7x': No such file or directory
+rm: cannot remove '/etc/sample.bats-1-04RUVmBP7x': No such file or directory
 --
 ```
 
@@ -980,7 +980,7 @@ path : <temp>/path/to/non-existent-file
 
 ## **Development**
 
-No one would want to develop piece of bash dependant libraries on their laptops due to single mistake (globbing for instance) can cause a disaster. In order to prevent this there is a Vagrantfile that you can use.
+No one would want to develop piece of bash dependent libraries on their laptops due to single mistake (globbing for instance) can cause a disaster. In order to prevent this there is a Vagrantfile that you can use.
 
 In order to start development environment, you have to take two steps;
 
@@ -990,7 +990,7 @@ user@localhost:~/bats-file$ vagrant up
 
 The line above spins up a brand new virtualbox image and provisions with prerequisites.
 
-However, as the tests require not to be on a network share due to running commands eg: `mknod`, the files are shared into the VM by `rsync` module. Rsync in vagrant only runs initialy and stops. During the active development, you regularly change files and might want to see the impact. To achive that, you have to use auto rsync.
+However, as the tests require not to be on a network share due to running commands eg: `mknod`, the files are shared into the VM by `rsync` module. Rsync in vagrant only runs initially and stops. During the active development, you regularly change files and might want to see the impact. To achieve that, you have to use auto rsync.
 
 > `auto-rsync` is a long running command. It means that it has to run on terminal screen as long as the VM is up and running. So, you have to keep this in a dedicated terminal screen.
 
