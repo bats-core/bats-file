@@ -542,7 +542,7 @@ assert_file_contains() {
   local -r file="$1"
   local -r regex="$2"
   local -r cmd="${3:-grep}"
-  
+
   case "$cmd" in
     grep|egrep|pcregrep)
       if ! type "${cmd}" &>/dev/null; then
@@ -552,7 +552,7 @@ assert_file_contains() {
     ;;
     *)
       batslib_decorate "Regex engine \"${cmd}\" not in allow list" \
-      | fail  
+        | fail
     ;;
   esac
   if ! "$cmd" -q "$regex" "$file"; then
@@ -563,7 +563,8 @@ assert_file_contains() {
       | fail
   fi
 }
-# Fail and display path of the file (or directory) if it does contain a string.
+# Fail and display path of the file (or directory) if it does contain a string
+# or if the file does not exist.
 # This function is the logical complement of `assert_file_contains'.
 #
 # Globals:
@@ -572,6 +573,7 @@ assert_file_contains() {
 # Arguments:
 #   $1 - path
 #   $2 - regex
+#   $3 - grep engine to use (grep, egrep, pcregrep) - optional
 # Returns:
 #   0 - file does not contain regex
 #   1 - otherwise
@@ -580,6 +582,7 @@ assert_file_contains() {
 assert_file_not_contains() {
   local -r file="$1"
   local -r regex="$2"
+  local -r cmd="${3:-grep}"
 
   if [[ ! -f "$file" ]]; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
@@ -587,14 +590,27 @@ assert_file_not_contains() {
     batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
       | batslib_decorate 'file does not exist' \
       | fail
-  
-  elif grep -q "$regex" "$file"; then
-    local -r rem="${BATSLIB_FILE_PATH_REM-}"
-    local -r add="${BATSLIB_FILE_PATH_ADD-}"
-    batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
-      | batslib_decorate 'file contains regex' \
-      | fail
 
+  else
+    case "$cmd" in
+      grep|egrep|pcregrep)
+        if ! type "${cmd}" &>/dev/null; then
+          batslib_decorate "Regex engine \"${cmd}\" not available on this system" \
+            | fail
+        fi
+      ;;
+      *)
+        batslib_decorate "Regex engine \"${cmd}\" not in allow list" \
+          | fail
+      ;;
+    esac
+    if "$cmd" -q "$regex" "$file"; then
+      local -r rem="${BATSLIB_FILE_PATH_REM-}"
+      local -r add="${BATSLIB_FILE_PATH_ADD-}"
+      batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
+        | batslib_decorate 'file contains regex' \
+        | fail
+    fi
   fi
 }
 # Fail and display path of the file (or directory) if it is not empty.
