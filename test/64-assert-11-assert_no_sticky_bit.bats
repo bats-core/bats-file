@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not provide the POSIX sticky mode bit'
   touch ${TEST_FIXTURE_ROOT}/dir/stickybit ${TEST_FIXTURE_ROOT}/dir/notstickybit
   chmod +t ${TEST_FIXTURE_ROOT}/dir/stickybit
   

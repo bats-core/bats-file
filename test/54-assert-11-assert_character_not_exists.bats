@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows cannot create character devices'
   bats_sudo mknod ${TEST_FIXTURE_ROOT}/dir/test_device c 89 1
 }
 teardown () {

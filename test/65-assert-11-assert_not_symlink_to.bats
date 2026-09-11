@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'symlink'
 
 setup () {
+ skip_on_msys 'Git for Windows does not create symbolic links by default'
  touch ${TEST_FIXTURE_ROOT}/file ${TEST_FIXTURE_ROOT}/notasymlink
  ln -s ${TEST_FIXTURE_ROOT}/file ${TEST_FIXTURE_ROOT}/symlink
  

@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not create symbolic links by default'
   touch ${TEST_FIXTURE_ROOT}/dir/file
   ln -s ${TEST_FIXTURE_ROOT}/dir/file ${TEST_FIXTURE_ROOT}/dir/link
 

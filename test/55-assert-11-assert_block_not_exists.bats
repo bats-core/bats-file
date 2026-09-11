@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows cannot create block devices'
   bats_sudo mknod ${TEST_FIXTURE_ROOT}/dir/blockfile b 89 1
 }
 teardown () {
@@ -62,4 +63,3 @@ teardown () {
   [ "${lines[1]}" == "path : ${TEST_FIXTURE_ROOT}/../blockfile" ]
   [ "${lines[2]}" == '--' ]
 }
-

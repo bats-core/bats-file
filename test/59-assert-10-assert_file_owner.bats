@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not provide POSIX file ownership'
   touch ${TEST_FIXTURE_ROOT}/dir/owner ${TEST_FIXTURE_ROOT}/dir/notowner
   # There is PATH addition to /usr/sbin which won't come by default on bash3
   # on macOS

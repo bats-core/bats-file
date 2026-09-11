@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not provide the set-user-ID mode bit'
   touch ${TEST_FIXTURE_ROOT}/dir/useridset ${TEST_FIXTURE_ROOT}/dir/useridnotset
   chmod u+s ${TEST_FIXTURE_ROOT}/dir/useridset
   

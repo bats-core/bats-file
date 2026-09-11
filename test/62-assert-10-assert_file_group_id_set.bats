@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not provide the set-group-ID mode bit'
   touch ${TEST_FIXTURE_ROOT}/dir/groupidset ${TEST_FIXTURE_ROOT}/dir/groupidnotset
   chmod g+s ${TEST_FIXTURE_ROOT}/dir/groupidset
   

@@ -4,7 +4,8 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
-  touch ${TEST_FIXTURE_ROOT}/dir/execfile ${TEST_FIXTURE_ROOT}/dir/noexecfile
+  printf '#!/usr/bin/env bash\n' >"${TEST_FIXTURE_ROOT}/dir/execfile"
+  touch ${TEST_FIXTURE_ROOT}/dir/noexecfile
   chmod +x ${TEST_FIXTURE_ROOT}/dir/execfile
 
 }

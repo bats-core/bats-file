@@ -486,6 +486,7 @@ assert_symlink_to() {
     batslib_print_kv_single 4 'path' "${link/$rem/$add}" \
       | batslib_decorate 'file is not a symbolic link' \
       | fail
+    return 1
   fi
 
   local realsource; realsource=$( "${readlink_command[@]}" "$link" ); readonly realsource

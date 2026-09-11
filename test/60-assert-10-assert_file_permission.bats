@@ -4,6 +4,7 @@ load 'test_helper'
 fixtures 'exist'
 
 setup () {
+  skip_on_msys 'Git for Windows does not provide POSIX permission mode bits'
   touch ${TEST_FIXTURE_ROOT}/dir/permission
   chmod 777 ${TEST_FIXTURE_ROOT}/dir/permission
 }
