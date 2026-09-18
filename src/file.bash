@@ -283,7 +283,7 @@ _bats_get_file_owner() {
 }
 
 # Fail and display path of the user is not the owner of a file. This
-# function is the logical complement of `assert_file_not_owner'.
+# function is the logical complement of `assert_not_file_owner'.
 #
 # Globals:
 #   BATSLIB_FILE_PATH_REM
