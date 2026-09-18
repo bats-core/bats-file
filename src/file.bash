@@ -267,19 +267,20 @@ assert_files_equal() {
   fi
 }
 
-# Get the owner of a file
+# Get the owner of a file using the installed stat implementation.
 # Arguments:
-# $1 - output variable name
-# $2 - path to file
+# $1 - path to file
 _bats_get_file_owner() {
-  local -r output_var=$1
-  local -r file=$2
+  local -r file=$1
   if [[ "$OSTYPE" == darwin* ]]; then
-      local -ra cmd_params=(-f %Su)
+    local -ra preferred_stat_args=(-f %Su)
+    local -ra fallback_stat_args=(-c %U)
   else
-      local -ra cmd_params=(-c %U)
+    local -ra preferred_stat_args=(-c %U)
+    local -ra fallback_stat_args=(-f %Su)
   fi
-  printf -v "$output_var" "%s" "$(stat "${cmd_params[@]}" "$file")"
+  stat "${preferred_stat_args[@]}" "$file" 2>/dev/null ||
+    stat "${fallback_stat_args[@]}" "$file"
 }
 
 # Fail and display path of the user is not the owner of a file. This
@@ -298,9 +299,9 @@ _bats_get_file_owner() {
 assert_file_owner() {
   local -r owner="$1"
   local -r file="$2"
-  
+
   local actual_owner
-  _bats_get_file_owner actual_owner "$file"
+  actual_owner=$(_bats_get_file_owner "$file")
   readonly actual_owner
 
   if [[ "$actual_owner" != "$owner" ]]; then
@@ -310,6 +311,22 @@ assert_file_owner() {
       | batslib_decorate "user $owner is not the owner of the file" \
       | fail
   fi
+}
+
+# Get the permissions of a file using the installed stat implementation.
+# Arguments:
+# $1 - path to file
+_bats_get_file_permission() {
+  local -r file=$1
+  if [[ "$OSTYPE" == darwin* ]]; then
+    local -ra preferred_stat_args=(-f %A)
+    local -ra fallback_stat_args=(-c %a)
+  else
+    local -ra preferred_stat_args=(-c %a)
+    local -ra fallback_stat_args=(-f %A)
+  fi
+  stat "${preferred_stat_args[@]}" "$file" 2>/dev/null ||
+    stat "${fallback_stat_args[@]}" "$file"
 }
 
 # Fail if file does not have given permissions. This
@@ -330,11 +347,9 @@ assert_file_permission() {
   local -r permission="$1"
   local -r file="$2"
 
-  if [[ "$OSTYPE" == darwin* ]]; then
-      local -r actual_permission=$(stat -f '%A' "$file")
-  else
-      local -r actual_permission=$(stat -c "%a" "$file")
-  fi
+  local actual_permission
+  actual_permission=$(_bats_get_file_permission "$file")
+  readonly actual_permission
 
   if [[ "$actual_permission" != "$permission" ]]; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
@@ -479,7 +494,7 @@ assert_symlink_to() {
   else
     local -ra readlink_command=(readlink -f)
   fi
-  
+
   if [ ! -L "$link"   ]; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"
@@ -542,7 +557,7 @@ assert_file_contains() {
   local -r file="$1"
   local -r regex="$2"
   local -r cmd="${3:-grep}"
-  
+
   case "$cmd" in
     grep|egrep|pcregrep)
       if ! type "${cmd}" &>/dev/null; then
@@ -552,7 +567,7 @@ assert_file_contains() {
     ;;
     *)
       batslib_decorate "Regex engine \"${cmd}\" not in allow list" \
-      | fail  
+      | fail
     ;;
   esac
   if ! "$cmd" -q "$regex" "$file"; then
@@ -587,7 +602,7 @@ assert_file_not_contains() {
     batslib_print_kv_single 4 'path' "${file/$rem/$add}" 'regex' "$regex" \
       | batslib_decorate 'file does not exist' \
       | fail
-  
+
   elif grep -q "$regex" "$file"; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"
@@ -857,7 +872,7 @@ assert_not_file_owner() {
   local -r file="$2"
 
   local actual_owner
-  _bats_get_file_owner actual_owner "$file"
+  actual_owner=$(_bats_get_file_owner "$file")
   readonly actual_owner
 
   if [[ "$actual_owner" == "$expected_owner" ]]; then
@@ -886,11 +901,9 @@ assert_not_file_permission() {
   local -r permission="$1"
   local -r file="$2"
 
-  if [[ "$OSTYPE" == darwin* ]]; then
-      local -r actual_permission=$(stat -f '%A' "$file")
-  else
-      local -r actual_permission=$(stat -c "%a" "$file")
-  fi
+  local actual_permission
+  actual_permission=$(_bats_get_file_permission "$file")
+  readonly actual_permission
 
   if [ "$actual_permission" -eq "$permission" ]; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
@@ -1031,14 +1044,14 @@ assert_no_sticky_bit() {
 assert_not_symlink_to() {
   local -r sourcefile="$1"
   local -r link="$2"
-  
-  
+
+
   if [[ $OSTYPE == darwin* ]]; then
     local -ra readlink_command=(_bats_file_readlinkf_macos)
   else
     local -ra readlink_command=(readlink -f)
   fi
-  
+
   if [ -L "$link"   ]; then
     local -r rem="${BATSLIB_FILE_PATH_REM-}"
     local -r add="${BATSLIB_FILE_PATH_ADD-}"

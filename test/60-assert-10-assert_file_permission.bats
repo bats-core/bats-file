@@ -20,6 +20,35 @@ teardown () {
   [ "${#lines[@]}" -eq 0 ]
 }
 
+@test 'assert_file_permission() <file>: supports GNU stat on macOS' {
+  local OSTYPE=darwin
+  local -r permission="777"
+  local -r file="${TEST_FIXTURE_ROOT}/dir/permission"
+  stat() {
+    [[ "$1" == '-c' && "$2" == '%a' && "$3" == "$file" ]] || return 1
+    printf '777\n'
+  }
+  run assert_file_permission "$permission" "$file"
+  [ "$status" -eq 0 ]
+  [ "${#lines[@]}" -eq 0 ]
+}
+
+@test 'assert_file_permission() <file>: supports BSD stat on Linux' {
+  local OSTYPE=linux-gnu
+  local -r permission="777"
+  local -r file="${TEST_FIXTURE_ROOT}/dir/permission"
+  stat() {
+    if [[ "$1" == '-c' && "$2" == '%a' && "$3" == "$file" ]]; then
+      return 1
+    fi
+    [[ "$1" == '-f' && "$2" == '%A' && "$3" == "$file" ]] || return 1
+    printf '777\n'
+  }
+  run assert_file_permission "$permission" "$file"
+  [ "$status" -eq 0 ]
+  [ "${#lines[@]}" -eq 0 ]
+}
+
 @test 'assert_file_permission() <file>: returns 1 and displays path if <file> file does not have permissions 777' {
   local -r permission="644"
   local -r file="${TEST_FIXTURE_ROOT}/dir/permission"
@@ -30,8 +59,6 @@ teardown () {
   [ "${lines[1]}" == "path : $file" ]
   [ "${lines[2]}" == '--' ]
 }
-
-
 
 # Transforming path
 @test 'assert_file_permission() <file>: replace prefix of displayed path' {
