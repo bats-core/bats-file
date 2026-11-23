@@ -28,6 +28,25 @@ fixtures 'temp'
   [ ! -e "$TEST_TEMP_DIR" ]
 }
 
+@test 'temp_del() <path>: does not prompt for write-protected files when stdin is a terminal' {
+  export TEST_TEMP_DIR="$BATS_TEST_TMPDIR/dir"
+  mkdir "$TEST_TEMP_DIR"
+  touch "$TEST_TEMP_DIR/readonly"
+  chmod a-w "$TEST_TEMP_DIR/readonly"
+  [ ! -w "$TEST_TEMP_DIR/readonly" ] || skip 'file is still writable by this user'
+
+  # Give teardown a terminal and a negative answer. If rm prompts, the file remains.
+  run python - "$TEST_FIXTURE_ROOT/temp_del-pass.bats" <<'PYTHON'
+import os, pty, subprocess, sys
+master, slave = pty.openpty()
+os.write(master, b'n\n')
+sys.exit(subprocess.run(['bats', sys.argv[1]], stdin=slave, timeout=15).returncode)
+PYTHON
+
+  [ "$status" -eq 0 ]
+  [ ! -e "$TEST_TEMP_DIR" ]
+}
+
 @test 'temp_del() <path>: returns 1 and displays an error message if <path> can not be deleted' {
   local -r path="${TEST_FIXTURE_ROOT}/does/not/exist"
   run temp_del "$path"
