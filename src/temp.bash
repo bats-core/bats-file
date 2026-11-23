@@ -169,9 +169,9 @@ temp_del() {
     (( ${BATS_TEST_COMPLETED:-0} != 1 )) && return 0
   fi
 
-  # Delete directory.
+  # Delete without prompting, but preserve rm errors.
   local result
-  if ! result="$(rm -r -- "$path" 2>&1 >/dev/null )"; then
+  if ! result="$(rm -r -- "$path" </dev/null 2>&1 >/dev/null)"; then
     echo "$result" \
       | batslib_decorate 'ERROR: temp_del' \
       | fail
